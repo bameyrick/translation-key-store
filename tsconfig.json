@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "sourceMap": false,
     "experimentalDecorators": true,
     "noImplicitAny": false,
     "noImplicitThis": true,

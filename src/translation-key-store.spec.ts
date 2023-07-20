@@ -45,7 +45,7 @@ describe(`TranslationKeyStore`, () => {
   });
 
   it(`should log an error if translation is not found`, () => {
-    const store = new TranslationKeyStore(true);
+    const store = new TranslationKeyStore({ enableLogging: true });
 
     store.addLanguageNamespace('en', 'test', { test: 'test' });
 
@@ -55,7 +55,7 @@ describe(`TranslationKeyStore`, () => {
 
     store.getTranslationValue('test.no', 'en', 'de');
 
-    expect(console.error).toHaveBeenCalledWith(`Translation not found for en.test.no`);
+    expect(console.error).toHaveBeenCalledWith(`Missing translation for key "test.no" in language "en"`);
 
     console.error = consoleError;
   });
@@ -74,5 +74,36 @@ describe(`TranslationKeyStore`, () => {
     expect(console.error).not.toHaveBeenCalled();
 
     console.error = consoleError;
+  });
+
+  it(`Should use a provided missing translation handler`, () => {
+    const missingTranslationHandler = jest.fn();
+
+    const store = new TranslationKeyStore({ missingTranslationHandler });
+
+    store.addLanguageNamespace('en', 'test', { test: 'test' });
+
+    store.getTranslationValue('test.no', 'en', 'de');
+
+    expect(missingTranslationHandler).toHaveBeenCalledWith('en', 'test.no');
+  });
+
+  it(`should fall back to the default language store if the language store is not found`, () => {
+    const store = new TranslationKeyStore();
+
+    store.addLanguageNamespace('en', 'test', { test: 'test' });
+
+    const result = store.getTranslationValue('test.test', 'de', 'en');
+
+    expect(result).toBeDefined();
+    expect(result!()).toBe('test');
+  });
+
+  it(`Should return undefined if the key is not found in any store`, () => {
+    const store = new TranslationKeyStore();
+
+    const result = store.getTranslationValue('test.test', 'de', 'en');
+
+    expect(result).toBeUndefined();
   });
 });

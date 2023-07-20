@@ -20,14 +20,19 @@ export class TranslationKeyStore {
    */
   private readonly messageformat = new MessageFormat([]);
 
-  constructor(
-    enableLogging?: boolean,
-    private readonly missingTranslationHandler: (language: string, key: string) => void = (language: string, key: string) => {
-      if (enableLogging) {
-        console.error(`Translation not found for ${language}.${key}`);
-      }
+  private readonly missingTranslationHandler: (language: string, key: string) => void;
+
+  constructor(options?: { enableLogging?: boolean; missingTranslationHandler?: (language: string, key: string) => void }) {
+    if (options?.missingTranslationHandler) {
+      this.missingTranslationHandler = options.missingTranslationHandler;
+    } else {
+      this.missingTranslationHandler = (language: string, key: string) => {
+        if (options?.enableLogging) {
+          console.error(`Missing translation for key "${key}" in language "${language}"`);
+        }
+      };
     }
-  ) {}
+  }
 
   /**
    * Adds a namespace for a given language to the store
