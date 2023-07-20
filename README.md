@@ -41,7 +41,7 @@ When creating your store you can optionally enable logging of missing translatio
 import { TranslationKeyStore } from '@qntm-code/translation-key-store';
 
 // Create a new store singleton
-export const store = new TranslationKeyStore(true);
+export const store = new TranslationKeyStore({ enableLogging: true });
 ```
 
 Or you can provide your own missing translation handler:
@@ -50,8 +50,10 @@ Or you can provide your own missing translation handler:
 import { TranslationKeyStore } from '@qntm-code/translation-key-store';
 
 // Create a new store singleton
-export const store = new TranslationKeyStore(false, (language: string, key: string) => {
-  // Do something with the missing translation information
+export const store = new TranslationKeyStore({
+  missingTranslationHandler: (language: string, key: string) => {
+    // Do something with the missing translation information
+  },
 });
 ```
 
