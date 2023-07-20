@@ -1,5 +1,6 @@
 import MessageFormat, { MessageFunction } from '@messageformat/core';
 import { isEmpty, isObject, isString } from '@qntm-code/utils';
+import { MissingTranslationHandlerFn } from './missing-translation-handler-fn.model';
 
 export type TranslationValue = MessageFunction<'string'>;
 
@@ -20,9 +21,9 @@ export class TranslationKeyStore {
    */
   private readonly messageformat = new MessageFormat([]);
 
-  private readonly missingTranslationHandler: (language: string, key: string) => void;
+  private readonly missingTranslationHandler: MissingTranslationHandlerFn;
 
-  constructor(options?: { enableLogging?: boolean; missingTranslationHandler?: (language: string, key: string) => void }) {
+  constructor(options?: { enableLogging?: boolean; missingTranslationHandler?: MissingTranslationHandlerFn }) {
     if (options?.missingTranslationHandler) {
       this.missingTranslationHandler = options.missingTranslationHandler;
     } else {
